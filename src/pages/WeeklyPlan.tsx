@@ -2,6 +2,8 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 import styles from './WeeklyPlan.module.css'
 
+import MealCard from '../components/MealCard'
+
 function WeeklyPlan() {
   return (
     <section className={styles.page} aria-labelledby="weekly-plan-title">
@@ -35,6 +37,25 @@ function WeeklyPlan() {
             </button>
         </div>
 
+        <section
+            className={styles.day}
+            aria-labelledby="monday-title"
+        >
+            <div className={styles.dayHeader}>
+                <h2
+                id="monday-title"
+                className={styles.dayTitle}
+                >
+                    Monday
+                </h2>
+            </div>
+
+            <MealCard
+                title="Creamy Tomato Orzo"
+                mealType="dinner"
+                duration={25}
+            />
+        </section>
     </section>
   )
 }
