@@ -17,3 +17,13 @@ export const recipes: Recipe[] = [
     duration: 30,
   },
 ]
+
+export function getRecipeById(id: number): Recipe {
+  const recipe = recipes.find((recipe) => recipe.id === id)
+
+  if (!recipe) {
+    throw new Error(`Recipe with ID ${id} not found`)
+  }
+
+  return recipe
+}
