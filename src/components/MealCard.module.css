@@ -34,24 +34,3 @@
   color: var(--color-text-secondary);
   font-size: 13px;
 }
-
-.emptyState {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  min-height: 100px;
-  padding: 24px;
-
-  background-color: var(--color-primary-light);
-  border: 1px dashed var(--color-border);
-  border-radius: 16px;
-
-  color: var(--color-text-secondary);
-  font-size: 14px;
-  text-align: center;
-}
-
-.emptyState p {
-  margin: 0;
-}

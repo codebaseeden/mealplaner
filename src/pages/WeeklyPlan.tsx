@@ -2,14 +2,16 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 import styles from './WeeklyPlan.module.css'
 
-import MealCard from '../components/MealCard'
+import type { Day } from '../types/meal'
+import DayPlan from '../components/DayPlan'
 
-const weekPlan = [
+const weekPlan: Day[] = [
   {
     id: 1,
     day: 'Monday',
     meals: [
       {
+        id: 101,
         title: 'Creamy Tomato Orzo',
         mealType: 'dinner' as const,
         duration: 25,
@@ -21,11 +23,13 @@ const weekPlan = [
     day: 'Tuesday',
     meals: [
       {
+        id: 102,
         title: 'Overnight Oats',
         mealType: 'breakfast' as const,
         duration: 10,
       },
       {
+        id: 103,
         title: 'Crispy Tofu Bowl',
         mealType: 'dinner' as const,
         duration: 30,
@@ -73,35 +77,7 @@ function WeeklyPlan() {
         </div>
 
         {weekPlan.map((day) => (
-            <section
-                key={day.id}
-                className={styles.day}
-                aria-labelledby={`day-${day.id}`}
-            >
-                <div className={styles.dayHeader}>
-                    <h2
-                        id={`day-${day.id}`}
-                        className={styles.dayTitle}
-                    >
-                        {day.day}
-                    </h2>
-                </div>
-
-                {day.meals.length > 0 ? (
-                    day.meals.map((meal, index) => (
-                        <MealCard
-                        key={index}
-                        title={meal.title}
-                        mealType={meal.mealType}
-                        duration={meal.duration}
-                        />
-                    ))
-                    ) : (
-                    <div className={styles.emptyState}>
-                        <p>No meals planned yet.</p>
-                    </div>
-                )}
-            </section>
+            <DayPlan key={day.id} day={day} />
         ))}
     </section>
   )
