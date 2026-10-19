@@ -25,9 +25,9 @@ function DayPlan({ day }: DayPlanProps) {
         day.meals.map((meal) => (
           <MealCard
             key={meal.id}
-            title={meal.title}
+            title={meal.recipe.title}
             mealType={meal.mealType}
-            duration={meal.duration}
+            duration={meal.recipe.duration}
           />
         ))
       ) : (

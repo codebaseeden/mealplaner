@@ -12,9 +12,12 @@ const weekPlan: Day[] = [
     meals: [
       {
         id: 101,
-        title: 'Creamy Tomato Orzo',
-        mealType: 'dinner' as const,
-        duration: 25,
+        mealType: 'dinner',
+        recipe: {
+          id: 1,
+          title: 'Creamy Tomato Orzo',
+          duration: 25,
+        },
       },
     ],
   },
@@ -24,15 +27,21 @@ const weekPlan: Day[] = [
     meals: [
       {
         id: 102,
-        title: 'Overnight Oats',
-        mealType: 'breakfast' as const,
-        duration: 10,
+        mealType: 'breakfast',
+        recipe: {
+          id: 2,
+          title: 'Overnight Oats',
+          duration: 10,
+        },
       },
       {
         id: 103,
-        title: 'Crispy Tofu Bowl',
-        mealType: 'dinner' as const,
-        duration: 30,
+        mealType: 'dinner',
+        recipe: {
+          id: 3,
+          title: 'Crispy Tofu Bowl',
+          duration: 30,
+        },
       },
     ],
   },
