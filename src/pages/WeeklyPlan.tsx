@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import styles from './WeeklyPlan.module.css'
 
 import type { Day } from '../types/meal'
-import { recipes } from '../data/recipes'
+import { getRecipeById } from '../data/recipes'
 
 import DayPlan from '../components/DayPlan'
 
@@ -15,7 +15,7 @@ const weekPlan: Day[] = [
         {
             id: 101,
             mealType: 'dinner',
-            recipe: recipes[0],
+            recipe: getRecipeById(1),
         },
         ],
     },
@@ -26,12 +26,12 @@ const weekPlan: Day[] = [
         {
             id: 102,
             mealType: 'breakfast',
-            recipe: recipes[1],
+            recipe: getRecipeById(2),
         },
         {
             id: 103,
             mealType: 'dinner',
-            recipe: recipes[2],
+            recipe: getRecipeById(3),
         },
         ],
     },
