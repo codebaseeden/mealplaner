@@ -30,27 +30,45 @@ function App() {
       onTabChange={setActiveTab}
     >
 
-      <h2>Einkaufsliste</h2>
+      {activeTab === 'plan' && (
+        <section>
+          <h1>Weekly Plan</h1>
+          <p>Your delicious week starts here. 🌱</p>
+        </section>
+      )}
 
-      <ul>
-        {items.map((item) => (
-          <li key={item.id}>
-            <label>
-              <input
-                type="checkbox"
-                checked={item.checked}
-                onChange={() => toggleItem(item.id)}
-              />
-              <span
-                style={{
-                  textDecoration: item.checked ? "line-through" : "none", }}
-                >
-                  {item.name}
-                </span>
-            </label>
-          </li>
-        ))}
-      </ul>
+      {activeTab === 'shop' && (
+        <>
+        <h2>Einkaufsliste</h2>
+
+        <ul>
+          {items.map((item) => (
+            <li key={item.id}>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={item.checked}
+                  onChange={() => toggleItem(item.id)}
+                />
+                <span
+                  style={{
+                    textDecoration: item.checked ? "line-through" : "none", }}
+                  >
+                    {item.name}
+                  </span>
+              </label>
+            </li>
+          ))}
+        </ul>
+        </>
+      )}
+
+      {activeTab === 'import' && (
+        <section>
+          <h1>Import</h1>
+          <p>Import your meal plan here 📩</p>
+        </section>
+      )}
 
       <Button
         label = 'Add Item'

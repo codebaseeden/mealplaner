@@ -1,0 +1,34 @@
+.navigation {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+
+  flex: 1;
+  padding: 8px 12px;
+
+  border: none;
+  background: transparent;
+
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+  font-size: 12px;
+
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.tab:hover {
+  color: var(--color-primary);
+}
+
+.active {
+  color: var(--color-primary);
+  font-weight: 600;
+}
