@@ -1,6 +1,7 @@
 import type { Day } from '../types/meal'
 import MealCard from './MealCard'
 import styles from './DayPlan.module.css'
+import { getRecipeById } from '../data/recipes'
 
 type DayPlanProps = {
   day: Day
@@ -22,14 +23,18 @@ function DayPlan({ day }: DayPlanProps) {
       </div>
 
       {day.meals.length > 0 ? (
-        day.meals.map((meal) => (
-          <MealCard
-            key={meal.id}
-            title={meal.recipe.title}
-            mealType={meal.mealType}
-            duration={meal.recipe.duration}
-          />
-        ))
+        day.meals.map((meal) => {
+            const recipe = getRecipeById(meal.recipeId)
+
+            return (
+                <MealCard
+                    key={meal.id}
+                    title={recipe.title}
+                    mealType={meal.mealType}
+                    duration={recipe.duration}
+                />
+            )
+        })
       ) : (
         <div className={styles.emptyState}>
           <p>No meals planned yet.</p>

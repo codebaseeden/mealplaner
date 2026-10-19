@@ -9,7 +9,7 @@ export type MealType = 'breakfast' | 'lunch' | 'dinner'
 export type Meal = {
   id: number
   mealType: MealType
-  recipe: Recipe
+  recipeId: number
 }
 
 export type Day = {

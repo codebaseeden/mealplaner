@@ -15,7 +15,7 @@ const weekPlan: Day[] = [
         {
             id: 101,
             mealType: 'dinner',
-            recipe: getRecipeById(1),
+            recipeId: 1,
         },
         ],
     },
@@ -26,12 +26,12 @@ const weekPlan: Day[] = [
         {
             id: 102,
             mealType: 'breakfast',
-            recipe: getRecipeById(2),
+            recipeId: 2,
         },
         {
             id: 103,
             mealType: 'dinner',
-            recipe: getRecipeById(3),
+            recipeId: 3,
         },
         ],
     },
