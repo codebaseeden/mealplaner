@@ -3,53 +3,43 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import styles from './WeeklyPlan.module.css'
 
 import type { Day } from '../types/meal'
+import { recipes } from '../data/recipes'
+
 import DayPlan from '../components/DayPlan'
 
 const weekPlan: Day[] = [
-  {
-    id: 1,
-    day: 'Monday',
-    meals: [
-      {
-        id: 101,
-        mealType: 'dinner',
-        recipe: {
-          id: 1,
-          title: 'Creamy Tomato Orzo',
-          duration: 25,
+    {
+        id: 1,
+        day: 'Monday',
+        meals: [
+        {
+            id: 101,
+            mealType: 'dinner',
+            recipe: recipes[0],
         },
-      },
-    ],
-  },
-  {
+        ],
+    },
+    {
     id: 2,
     day: 'Tuesday',
     meals: [
-      {
-        id: 102,
-        mealType: 'breakfast',
-        recipe: {
-          id: 2,
-          title: 'Overnight Oats',
-          duration: 10,
+        {
+            id: 102,
+            mealType: 'breakfast',
+            recipe: recipes[1],
         },
-      },
-      {
-        id: 103,
-        mealType: 'dinner',
-        recipe: {
-          id: 3,
-          title: 'Crispy Tofu Bowl',
-          duration: 30,
+        {
+            id: 103,
+            mealType: 'dinner',
+            recipe: recipes[2],
         },
-      },
-    ],
-  },
-  {
-    id: 3,
-    day: 'Wednesday',
-    meals: [],
-  },
+        ],
+    },
+    {
+        id: 3,
+        day: 'Wednesday',
+        meals: [],
+    },
 ]
 
 function WeeklyPlan() {
