@@ -2,16 +2,22 @@ import { recipes } from '../data/recipes'
 import { X, Plus, Clock3, Search } from 'lucide-react'
 import styles from './RecipePicker.module.css'
 import { useState } from 'react'
-import type { MealType } from '../types/meal'
+import type { MealType, PlanningMode } from '../types/meal'
 
 type RecipePickerProps = {
     dayId: number
-    onSelectRecipe: (dayId: number, recipeId: number, mealType: MealType) => void
+    planningMode: PlanningMode
+    onSelectRecipe: (
+        dayId: number,
+        recipeId: number,
+        mealType: MealType
+    ) => void
     onClose: () => void
 }
 
 function RecipePicker({
     dayId,
+    planningMode,
     onSelectRecipe,
     onClose,
 }: RecipePickerProps) {
@@ -26,6 +32,7 @@ function RecipePicker({
             .includes(searchQuery.toLowerCase())
 
         const matchesMealType =
+            planningMode === 'simple' ||
             !recipe.mealTypes ||
             recipe.mealTypes.length === 0 ||
             recipe.mealTypes.includes(selectedMealType)
@@ -84,24 +91,26 @@ function RecipePicker({
                     </button>
                 </div>
 
-                <div
-                    className={styles.mealTypeSelector}
-                    role="group"
-                    aria-label="Meal type"
-                >
-                    {(['breakfast', 'lunch', 'dinner'] as MealType[]).map((mealType) => (
-                        <button
-                            key={mealType}
-                            type="button"
-                            className={`${styles.mealTypeButton} ${selectedMealType === mealType ? styles.mealTypeButtonActive : ''
-                                }`}
-                            onClick={() => setSelectedMealType(mealType)}
-                            aria-pressed={selectedMealType === mealType}
-                        >
-                            {mealType}
-                        </button>
-                    ))}
-                </div>
+                {planningMode === 'detailed' && (
+                    <div
+                        className={styles.mealTypeSelector}
+                        role="group"
+                        aria-label="Meal type"
+                    >
+                        {(['breakfast', 'lunch', 'dinner'] as MealType[]).map((mealType) => (
+                            <button
+                                key={mealType}
+                                type="button"
+                                className={`${styles.mealTypeButton} ${selectedMealType === mealType ? styles.mealTypeButtonActive : ''
+                                    }`}
+                                onClick={() => setSelectedMealType(mealType)}
+                                aria-pressed={selectedMealType === mealType}
+                            >
+                                {mealType}
+                            </button>
+                        ))}
+                    </div>
+                )}
 
                 <div className={styles.searchField}>
                     <Search size={20} aria-hidden="true" />

@@ -11,6 +11,16 @@ type DayPlanProps = {
 }
 
 function DayPlan({ day, onAddMeal, onRemoveMeal }: DayPlanProps) {
+  const mealTypeOrder = {
+    breakfast: 0,
+    lunch: 1,
+    dinner: 2,
+  }
+
+  const sortedMeals = [...day.meals].sort(
+    (a, b) =>
+      mealTypeOrder[a.mealType] - mealTypeOrder[b.mealType]
+  )
   return (
     <section
       className={styles.day}
@@ -34,7 +44,7 @@ function DayPlan({ day, onAddMeal, onRemoveMeal }: DayPlanProps) {
       </div>
 
       {day.meals.length > 0 ? (
-        day.meals.map((meal) => {
+        sortedMeals.map((meal) => {
           const recipe = getRecipeById(meal.recipeId)
 
           return (

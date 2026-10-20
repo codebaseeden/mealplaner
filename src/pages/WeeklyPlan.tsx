@@ -1,9 +1,10 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import styles from './WeeklyPlan.module.css'
-import type { Day, Meal, MealType } from '../types/meal'
 import DayPlan from '../components/DayPlan'
 import RecipePicker from '../components/RecipePicker'
+
+import type { Day, Meal, MealType, PlanningMode } from '../types/meal'
 
 function createEmptyWeekPlan(): Day[] {
   return [
@@ -24,6 +25,11 @@ type RemovedMeal = {
 }
 
 function WeeklyPlan() {
+  const [planningMode, setPlanningMode] = useState<PlanningMode>(() => {
+    const savedMode = localStorage.getItem('meal-planner-mode')
+
+    return savedMode === 'detailed' ? 'detailed' : 'simple'
+  })
   const [weekPlans, setWeekPlans] = useState<Record<string, Day[]>>(() => {
     try {
       const savedPlans = localStorage.getItem('meal-planner-week-plans')
@@ -41,6 +47,10 @@ function WeeklyPlan() {
       JSON.stringify(weekPlans)
     )
   }, [weekPlans])
+
+  useEffect(() => {
+    localStorage.setItem('meal-planner-mode', planningMode)
+  }, [planningMode])
 
   const [selectedDayId, setSelectedDayId] = useState<number | null>(null)
   const [weekOffset, setWeekOffset] = useState(0)
@@ -76,14 +86,9 @@ function WeeklyPlan() {
         if (day.id === dayId) {
           return {
             ...day,
-            meals: [
-              ...day.meals,
-              {
-                id: Date.now(),
-                mealType,
-                recipeId,
-              },
-            ],
+            meals: planningMode === 'simple' && day.meals.length <= 1
+              ? [{ id: Date.now(), mealType, recipeId }]
+              : [...day.meals, { id: Date.now(), mealType, recipeId }],
           }
         }
 
@@ -208,6 +213,32 @@ function WeeklyPlan() {
         </p>
       </header>
 
+      <div
+        className={styles.planningModeSelector}
+        role="group"
+        aria-label="Planning mode"
+      >
+        <button
+          type="button"
+          className={`${styles.planningModeButton} ${planningMode === 'simple' ? styles.planningModeButtonActive : ''
+            }`}
+          onClick={() => setPlanningMode('simple')}
+          aria-pressed={planningMode === 'simple'}
+        >
+          Simple
+        </button>
+
+        <button
+          type="button"
+          className={`${styles.planningModeButton} ${planningMode === 'detailed' ? styles.planningModeButtonActive : ''
+            }`}
+          onClick={() => setPlanningMode('detailed')}
+          aria-pressed={planningMode === 'detailed'}
+        >
+          Detailed
+        </button>
+      </div>
+
       <div className={styles.weekNavigation} aria-label="Week navigation">
         <button
           type="button"
@@ -241,6 +272,7 @@ function WeeklyPlan() {
       {selectedDayId !== null && (
         <RecipePicker
           dayId={selectedDayId}
+          planningMode={planningMode}
           onSelectRecipe={(dayId, recipeId, mealType) => {
             addMeal(dayId, recipeId, mealType)
             setSelectedDayId(null)

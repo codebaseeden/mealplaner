@@ -18,3 +18,5 @@ export type Day = {
   day: string
   meals: Meal[]
 }
+
+export type PlanningMode = 'simple' | 'detailed'
