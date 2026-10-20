@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, X } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useState } from 'react'
 import styles from './WeeklyPlan.module.css'
 import type { Day, MealType } from '../types/meal'
@@ -6,48 +6,28 @@ import DayPlan from '../components/DayPlan'
 // import { recipes } from '../data/recipes'
 import RecipePicker from '../components/RecipePicker'
 
-const initialWeekPlan: Day[] = [
-  {
-    id: 1,
-    day: 'Monday',
-    meals: [
-      {
-        id: 101,
-        mealType: 'dinner',
-        recipeId: 1,
-      },
-    ],
-  },
-  {
-    id: 2,
-    day: 'Tuesday',
-    meals: [
-      {
-        id: 102,
-        mealType: 'breakfast',
-        recipeId: 2,
-      },
-      {
-        id: 103,
-        mealType: 'dinner',
-        recipeId: 3,
-      },
-    ],
-  },
-  {
-    id: 3,
-    day: 'Wednesday',
-    meals: [],
-  },
-]
+function createEmptyWeekPlan(): Day[] {
+  return [
+    { id: 1, day: 'Monday', meals: [] },
+    { id: 2, day: 'Tuesday', meals: [] },
+    { id: 3, day: 'Wednesday', meals: [] },
+    { id: 4, day: 'Thursday', meals: [] },
+    { id: 5, day: 'Friday', meals: [] },
+    { id: 6, day: 'Saturday', meals: [] },
+    { id: 7, day: 'Sunday', meals: [] },
+  ]
+}
 
 function WeeklyPlan() {
-  const [weekPlan, setWeekPlan] = useState<Day[]>(initialWeekPlan)
+  const [weekPlans, setWeekPlans] = useState<Record<string, Day[]>>({})
   const [selectedDayId, setSelectedDayId] = useState<number | null>(null)
+  const [weekOffset, setWeekOffset] = useState(0)
 
   function addMeal(dayId: number, recipeId: number, mealType: MealType) {
-    setWeekPlan((currentPlan) =>
-      currentPlan.map((day) => {
+    setWeekPlans((currentPlans) => {
+      const currentWeek = currentPlans[weekKey] ?? createEmptyWeekPlan()
+
+      const updatedWeek = currentWeek.map((day) => {
         if (day.id === dayId) {
           return {
             ...day,
@@ -55,8 +35,8 @@ function WeeklyPlan() {
               ...day.meals,
               {
                 id: Date.now(),
-                mealType: mealType,
-                recipeId: recipeId,
+                mealType,
+                recipeId,
               },
             ],
           }
@@ -64,8 +44,42 @@ function WeeklyPlan() {
 
         return day
       })
-    )
+
+      return {
+        ...currentPlans,
+        [weekKey]: updatedWeek,
+      }
+    })
   }
+
+  const today = new Date()
+  const monday = new Date(today)
+
+  const dayOfWeek = monday.getDay()
+  const daysSinceMonday = (dayOfWeek + 6) % 7
+
+  monday.setDate(monday.getDate() - daysSinceMonday + weekOffset * 7)
+
+  const weekKey = [
+    monday.getFullYear(),
+    String(monday.getMonth() + 1).padStart(2, '0'),
+    String(monday.getDate()).padStart(2, '0'),
+  ].join('-')
+
+  const weekPlan = weekPlans[weekKey] ?? createEmptyWeekPlan()
+
+  const sunday = new Date(monday)
+  sunday.setDate(monday.getDate() + 6)
+
+  const dateLocale = 'de-AT'
+  const weekLabel = `${monday.toLocaleDateString(dateLocale, {
+    month: '2-digit',
+    day: '2-digit',
+  })} - ${sunday.toLocaleDateString(dateLocale, {
+    month: '2-digit',
+    day: '2-digit',
+    year: 'numeric',
+  })}`
 
   return (
     <section className={styles.page} aria-labelledby="weekly-plan-title">
@@ -82,18 +96,18 @@ function WeeklyPlan() {
           type="button"
           className={styles.weekButton}
           aria-label="Previous week"
+          onClick={() => setWeekOffset((current) => current - 1)}
         >
           <ChevronLeft size={20} />
         </button>
 
-        <span className={styles.weekLabel}>
-          October 19 – 25, 2026
-        </span>
+        <span className={styles.weekLabel}>{weekLabel}</span>
 
         <button
           type="button"
           className={styles.weekButton}
           aria-label="Next week"
+          onClick={() => setWeekOffset((current) => current + 1)}
         >
           <ChevronRight size={20} />
         </button>
