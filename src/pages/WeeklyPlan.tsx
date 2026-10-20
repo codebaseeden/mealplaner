@@ -1,9 +1,8 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import styles from './WeeklyPlan.module.css'
 import type { Day, MealType } from '../types/meal'
 import DayPlan from '../components/DayPlan'
-// import { recipes } from '../data/recipes'
 import RecipePicker from '../components/RecipePicker'
 
 function createEmptyWeekPlan(): Day[] {
@@ -19,7 +18,24 @@ function createEmptyWeekPlan(): Day[] {
 }
 
 function WeeklyPlan() {
-  const [weekPlans, setWeekPlans] = useState<Record<string, Day[]>>({})
+  const [weekPlans, setWeekPlans] = useState<Record<string, Day[]>>(() => {
+    try {
+      const savedPlans = localStorage.getItem('meal-planner-week-plans')
+
+      return savedPlans ? JSON.parse(savedPlans) : {}
+    } catch (error) {
+      console.error('Failed to load saved meal plans:', error)
+      return {}
+    }
+  })
+
+  useEffect(() => {
+    localStorage.setItem(
+      'meal-planner-week-plans',
+      JSON.stringify(weekPlans)
+    )
+  }, [weekPlans])
+
   const [selectedDayId, setSelectedDayId] = useState<number | null>(null)
   const [weekOffset, setWeekOffset] = useState(0)
 
