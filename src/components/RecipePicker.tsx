@@ -11,8 +11,9 @@ type RecipePickerProps = {
         dayId: number,
         recipeId: number,
         mealType: MealType
-    ) => void
+    ) => boolean
     onClose: () => void
+    errorMessage: string | null
 }
 
 function RecipePicker({
@@ -20,10 +21,10 @@ function RecipePicker({
     planningMode,
     onSelectRecipe,
     onClose,
+    errorMessage,
 }: RecipePickerProps) {
 
     const [isClosing, setIsClosing] = useState(false)
-    const [pendingRecipeId, setPendingRecipeId] = useState<number | null>(null)
     const [searchQuery, setSearchQuery] = useState('')
     const [selectedMealType, setSelectedMealType] = useState<MealType>('dinner')
     const filteredRecipes = recipes.filter((recipe) => {
@@ -68,11 +69,7 @@ function RecipePicker({
                         return
                     }
 
-                    if (pendingRecipeId !== null) {
-                        onSelectRecipe(dayId, pendingRecipeId, selectedMealType)
-                    } else {
-                        onClose()
-                    }
+                    onClose()
                 }}
             >
                 <div className={styles.dragHandle} aria-hidden="true" />
@@ -124,6 +121,12 @@ function RecipePicker({
                     />
                 </div>
 
+                {errorMessage && (
+                    <div role="alert" className={styles.errorMessage}>
+                        <p>{errorMessage}</p>
+                    </div>
+                )}
+
                 <div className={styles.recipeList}>
                     {filteredRecipes.length === 0 ? (
                         <div className={styles.emptyState}>
@@ -139,13 +142,17 @@ function RecipePicker({
                                 type="button"
                                 className={styles.recipeButton}
                                 onClick={() => {
-                                    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                                        onSelectRecipe(dayId, recipe.id, selectedMealType)
+                                    const success = onSelectRecipe(
+                                        dayId,
+                                        recipe.id,
+                                        selectedMealType
+                                    )
+
+                                    if (!success) {
                                         return
                                     }
 
-                                    setPendingRecipeId(recipe.id)
-                                    setIsClosing(true)
+                                    handleClose()
                                 }}
                             >
                                 <span className={styles.recipeInfo}>

@@ -52,10 +52,13 @@ function WeeklyPlan() {
     localStorage.setItem('meal-planner-mode', planningMode)
   }, [planningMode])
 
+  // States
+
   const [selectedDayId, setSelectedDayId] = useState<number | null>(null)
   const [weekOffset, setWeekOffset] = useState(0)
   const [removedMeal, setRemovedMeal] = useState<RemovedMeal | null>(null)
   const [isSnackbarClosing, setIsSnackbarClosing] = useState(false)
+  const [mealPlanError, setMealPlanError] = useState<string | null>(null)
 
   useEffect(() => {
     if (removedMeal === null) {
@@ -79,6 +82,15 @@ function WeeklyPlan() {
   }, [removedMeal])
 
   function addMeal(dayId: number, recipeId: number, mealType: MealType) {
+    const currentDay = weekPlan.find(day => day.id === dayId)
+
+    if (planningMode === 'simple' && (currentDay?.meals.length ?? 0) > 1) {
+      setMealPlanError(
+        'This day already has multiple meals. Switch to Detailed Mode to manage them.'
+      )
+      return false
+    }
+
     setWeekPlans((currentPlans) => {
       const currentWeek = currentPlans[weekKey] ?? createEmptyWeekPlan()
 
@@ -100,6 +112,7 @@ function WeeklyPlan() {
         [weekKey]: updatedWeek,
       }
     })
+    return true
   }
 
   function removeMeal(dayId: number, mealId: number) {
@@ -274,10 +287,16 @@ function WeeklyPlan() {
           dayId={selectedDayId}
           planningMode={planningMode}
           onSelectRecipe={(dayId, recipeId, mealType) => {
-            addMeal(dayId, recipeId, mealType)
-            setSelectedDayId(null)
+            const success = addMeal(dayId, recipeId, mealType)
+
+            if (success) {
+              setMealPlanError(null)
+            }
+
+            return success
           }}
           onClose={() => setSelectedDayId(null)}
+          errorMessage={mealPlanError}
         />
       )}
 

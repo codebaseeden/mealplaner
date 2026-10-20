@@ -221,6 +221,18 @@
     outline-offset: 2px;
 }
 
+.errorMessage {
+  padding: 12px 16px;
+  border-radius: 8px;
+  background-color: #fff0ed;
+  color: #a32919;
+  font-size: 0.875rem;
+}
+
+.errorMessage p {
+  margin: 0;
+}
+
 @keyframes slideUp {
     from {
         transform: translateY(100%);
