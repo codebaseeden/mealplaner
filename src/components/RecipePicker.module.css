@@ -1,64 +1,222 @@
 .sheet {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
 
-  background-color: white;
-  padding: 24px;
+    background-color: white;
+    padding: 24px;
 
-  border-radius: 24px 24px 0 0;
-  z-index: 100;
+    border-radius: 24px 24px 0 0;
+    z-index: 100;
 
-  animation: slideUp 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: slideUp 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .backdrop {
-  position: fixed;
-  inset: 0;
+    position: fixed;
+    inset: 0;
 
-  width: 100%;
-  border: none;
-  padding: 0;
+    width: 100%;
+    border: none;
+    padding: 0;
 
-  background-color: rgb(0 0 0 / 45%);
-  z-index: 99;
-  cursor: default;
+    background-color: rgb(0 0 0 / 45%);
+    z-index: 99;
+    cursor: default;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.header h2 {
+    margin: 0;
+}
+
+.closeButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    width: 36px;
+    height: 36px;
+    padding: 0;
+
+    border: none;
+    border-radius: 50%;
+
+    background-color: #f3f4ef;
+    color: #29392f;
+
+    cursor: pointer;
+}
+
+.closeButton:hover {
+    background-color: #e5eadd;
+}
+
+.closeButton:focus-visible {
+    outline: 2px solid #3d634b;
+    outline-offset: 3px;
+}
+
+.recipeList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.recipeButton {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+
+    width: 100%;
+    padding: 16px;
+
+    border: 1px solid #e5e7df;
+    border-radius: 12px;
+
+    background-color: #fffdf8;
+    color: #3d634b;
+
+    text-align: left;
+    cursor: pointer;
+}
+
+.recipeButton:hover {
+    background-color: #f3f4ef;
+}
+
+.recipeButton:focus-visible {
+    outline: 2px solid #3d634b;
+    outline-offset: 2px;
+}
+
+.recipeInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.recipeTitle {
+    color: #29392f;
+    font-weight: 600;
+}
+
+.recipeDuration {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    color: #7b8076;
+    font-size: 0.875rem;
+}
+
+.emptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+
+    padding: 32px 16px;
+    text-align: center;
+    color: #7b8076;
+}
+
+.emptyState p {
+    margin: 0;
+    color: #29392f;
+    font-weight: 600;
+}
+
+.emptyState span {
+    font-size: 0.875rem;
 }
 
 .closing {
-  animation: slideDown 250ms cubic-bezier(0.4, 0, 1, 1) both;
+    animation: slideDown 250ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+.dragHandle {
+    width: 40px;
+    height: 5px;
+    margin: 0 auto 24px;
+
+    background-color: #cbd0c7;
+    border-radius: 999px;
+}
+
+.searchField {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 12px 16px;
+  margin-bottom: 24px;
+
+  border: 1px solid #e5e7df;
+  border-radius: 12px;
+  background-color: #fffdf8;
+  color: #7b8076;
+}
+
+.searchField input {
+  flex: 1;
+  min-width: 0;
+
+  padding: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+
+  color: #29392f;
+  font: inherit;
+}
+
+.searchField:focus-within {
+  border-color: #3d634b;
+  outline: 2px solid #3d634b;
+  outline-offset: 2px;
 }
 
 @keyframes slideUp {
-  from {
-    transform: translateY(100%);
-  }
+    from {
+        transform: translateY(100%);
+    }
 
-  to {
-    transform: translateY(0);
-  }
+    to {
+        transform: translateY(0);
+    }
 }
 
 @keyframes slideDown {
-  from {
-    transform: translateY(0);
-  }
+    from {
+        transform: translateY(0);
+    }
 
-  to {
-    transform: translateY(100%);
-  }
+    to {
+        transform: translateY(100%);
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sheet {
-    animation: none;
-  }
+    .sheet {
+        animation: none;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sheet,
-  .closing {
-    animation: none;
-  }
+
+    .sheet,
+    .closing {
+        animation: none;
+    }
 }

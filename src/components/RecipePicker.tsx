@@ -1,29 +1,33 @@
 import { recipes } from '../data/recipes'
-import { X } from 'lucide-react'
+import { X, Plus, Clock3, Search } from 'lucide-react'
 import styles from './RecipePicker.module.css'
 import { useState } from 'react'
 
 type RecipePickerProps = {
-  dayId: number
-  onSelectRecipe: (dayId: number, recipeId: number) => void
-  onClose: () => void
+    dayId: number
+    onSelectRecipe: (dayId: number, recipeId: number) => void
+    onClose: () => void
 }
 
 function RecipePicker({
-  dayId,
-  onSelectRecipe,
-  onClose,
+    dayId,
+    onSelectRecipe,
+    onClose,
 }: RecipePickerProps) {
 
     const [isClosing, setIsClosing] = useState(false)
-    const [pendingRecipeId, setPendingRecipeId] = useState<number | null >(null)
+    const [pendingRecipeId, setPendingRecipeId] = useState<number | null>(null)
+    const [searchQuery, setSearchQuery] = useState('')
+    const filteredRecipes = recipes.filter((recipe) =>
+        recipe.title.toLowerCase().includes(searchQuery.toLowerCase())
+    )
 
     function handleClose() {
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
             onClose()
             return
         }
-        
+
         setIsClosing(true)
     }
 
@@ -33,10 +37,10 @@ function RecipePicker({
                 type="button"
                 className={styles.backdrop}
                 onClick={handleClose}
-                aria-label="Close recipe picker" 
-                />
+                aria-label="Close recipe picker"
+            />
 
-            <div 
+            <div
                 className={`${styles.sheet} ${isClosing ? styles.closing : ''}`}
                 role="dialog"
                 aria-modal="true"
@@ -53,32 +57,68 @@ function RecipePicker({
                     }
                 }}
             >
-            <h2 id="recipe-picker-title">Choose a recipe</h2>
-            <button
-                type="button"
-                onClick={handleClose}
-                aria-label="Close recipe picker"
-            >
-                <X size={20} />
-            </button>
+                <div className={styles.dragHandle} aria-hidden="true" />
 
-            {recipes.map((recipe) => (
-                <button
-                key={recipe.id}
-                type="button"
-                onClick={() => {
-                    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                        onSelectRecipe(dayId, recipe.id)
-                        return
-                    }
-                    
-                    setPendingRecipeId(recipe.id)
-                    setIsClosing(true)
-                }}
-                >
-                {recipe.title}
-                </button>
-            ))}
+                <div className={styles.header}>
+                    <h2 id="recipe-picker-title">Choose a recipe</h2>
+
+
+                    <button
+                        className={styles.closeButton}
+                        type="button"
+                        onClick={handleClose}
+                        aria-label="Close recipe picker"
+                    >
+                        <X size={20} />
+                    </button>
+                </div>
+                    <div className={styles.searchField}>
+                        <Search size={20} aria-hidden="true" />
+
+                        <input
+                            type="search"
+                            placeholder="Search recipes..."
+                            aria-label="Search recipes"
+                            value={searchQuery}
+                            onChange={(event) => setSearchQuery(event.target.value)}
+                        />
+                    </div>
+
+                <div className={styles.recipeList}>
+                    {filteredRecipes.length === 0 ? (
+                        <div className={styles.emptyState}>
+                            <p>No recipes found</p>
+                            <span>Try searching for something else.</span>
+                        </div>
+                    ) : (
+                        filteredRecipes.map((recipe) => (
+                            <button
+                                key={recipe.id}
+                                type="button"
+                                className={styles.recipeButton}
+                                onClick={() => {
+                                    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                                        onSelectRecipe(dayId, recipe.id)
+                                        return
+                                    }
+
+                                    setPendingRecipeId(recipe.id)
+                                    setIsClosing(true)
+                                }}
+                            >
+                                <span className={styles.recipeInfo}>
+                                    <span className={styles.recipeTitle}>{recipe.title}</span>
+                                    <span className={styles.recipeDuration}>
+                                        <Clock3 size={14} />
+                                        {recipe.duration} min
+                                    </span>
+                                </span>
+
+                                <Plus size={20} aria-hidden="true" />
+                            </button>
+                        ))
+                    )}
+                </div>
             </div>
         </>
     )

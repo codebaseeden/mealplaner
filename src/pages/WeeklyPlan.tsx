@@ -3,42 +3,42 @@ import { useState } from 'react'
 import styles from './WeeklyPlan.module.css'
 import type { Day, MealType } from '../types/meal'
 import DayPlan from '../components/DayPlan'
-import { recipes } from '../data/recipes'
+// import { recipes } from '../data/recipes'
 import RecipePicker from '../components/RecipePicker'
 
 const initialWeekPlan: Day[] = [
-    {
-        id: 1,
-        day: 'Monday',
-        meals: [
-        {
-            id: 101,
-            mealType: 'dinner',
-            recipeId: 1,
-        },
-        ],
-    },
-    {
+  {
+    id: 1,
+    day: 'Monday',
+    meals: [
+      {
+        id: 101,
+        mealType: 'dinner',
+        recipeId: 1,
+      },
+    ],
+  },
+  {
     id: 2,
     day: 'Tuesday',
     meals: [
-        {
-            id: 102,
-            mealType: 'breakfast',
-            recipeId: 2,
-        },
-        {
-            id: 103,
-            mealType: 'dinner',
-            recipeId: 3,
-        },
-        ],
-    },
-    {
-        id: 3,
-        day: 'Wednesday',
-        meals: [],
-    },
+      {
+        id: 102,
+        mealType: 'breakfast',
+        recipeId: 2,
+      },
+      {
+        id: 103,
+        mealType: 'dinner',
+        recipeId: 3,
+      },
+    ],
+  },
+  {
+    id: 3,
+    day: 'Wednesday',
+    meals: [],
+  },
 ]
 
 function WeeklyPlan() {
