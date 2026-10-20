@@ -68,6 +68,28 @@ function WeeklyPlan() {
     })
   }
 
+  function removeMeal(dayId: number, mealId: number) {
+    setWeekPlans((currentPlans) => {
+      const currentWeek = currentPlans[weekKey] ?? createEmptyWeekPlan()
+
+      const updatedWeek = currentWeek.map((day) => {
+        if (day.id === dayId) {
+          return {
+            ...day,
+            meals: day.meals.filter((meal) => meal.id !== mealId),
+          }
+        }
+
+        return day
+      })
+
+      return {
+        ...currentPlans,
+        [weekKey]: updatedWeek,
+      }
+    })
+  }
+
   const today = new Date()
   const monday = new Date(today)
 
@@ -134,6 +156,7 @@ function WeeklyPlan() {
           key={day.id}
           day={day}
           onAddMeal={(dayId) => setSelectedDayId(dayId)}
+          onRemoveMeal={removeMeal}
         />
       ))}
       {selectedDayId !== null && (

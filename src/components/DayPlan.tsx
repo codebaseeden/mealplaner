@@ -7,9 +7,10 @@ import { Plus } from 'lucide-react'
 type DayPlanProps = {
   day: Day
   onAddMeal: (dayId: number) => void
+  onRemoveMeal: (dayId: number, mealId: number) => void
 }
 
-function DayPlan({ day, onAddMeal }: DayPlanProps) {
+function DayPlan({ day, onAddMeal, onRemoveMeal }: DayPlanProps) {
   return (
     <section
       className={styles.day}
@@ -24,26 +25,27 @@ function DayPlan({ day, onAddMeal }: DayPlanProps) {
         </h2>
         <button
           type='button'
-          className = {styles.addButton} 
+          className={styles.addButton}
           onClick={() => onAddMeal(day.id)}
           aria-label={`Add meal for ${day.day}`}
         >
-            <Plus size={18} strokeWidth={2} />
-          </button>
+          <Plus size={18} strokeWidth={2} />
+        </button>
       </div>
 
       {day.meals.length > 0 ? (
         day.meals.map((meal) => {
-            const recipe = getRecipeById(meal.recipeId)
+          const recipe = getRecipeById(meal.recipeId)
 
-            return (
-                <MealCard
-                    key={meal.id}
-                    title={recipe.title}
-                    mealType={meal.mealType}
-                    duration={recipe.duration}
-                />
-            )
+          return (
+            <MealCard
+              key={meal.id}
+              title={recipe.title}
+              mealType={meal.mealType}
+              duration={recipe.duration}
+              onRemove={() => onRemoveMeal(day.id, meal.id)}
+            />
+          )
         })
       ) : (
         <div className={styles.emptyState}>

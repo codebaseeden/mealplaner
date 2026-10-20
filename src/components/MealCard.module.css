@@ -8,6 +8,8 @@
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 16px;
+
+  position: relative;
 }
 
 .mealType {
@@ -33,4 +35,37 @@
 
   color: var(--color-text-secondary);
   font-size: 13px;
+}
+
+.removeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  width: 32px;
+  height: 32px;
+  padding: 0;
+
+  border: none;
+  border-radius: 50%;
+  background-color: transparent;
+  color: #7b8076;
+
+  cursor: pointer;
+  transition: background-color 150ms, color 150ms;
+
+  position: absolute;
+  top: 12px;
+  right: 12px;  
+}
+
+.removeButton:hover {
+  background-color: #fce8e6;
+  color: #b42318;
+}
+
+.removeButton:focus-visible {
+  outline: 2px solid #3d634b;
+  outline-offset: 2px;
 }
