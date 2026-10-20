@@ -5,9 +5,10 @@ import { getRecipeById } from '../data/recipes'
 
 type DayPlanProps = {
   day: Day
+  onAddMeal: (dayId: number) => void
 }
 
-function DayPlan({ day }: DayPlanProps) {
+function DayPlan({ day, onAddMeal }: DayPlanProps) {
   return (
     <section
       className={styles.day}
@@ -20,6 +21,11 @@ function DayPlan({ day }: DayPlanProps) {
         >
           {day.day}
         </h2>
+        <button
+          type='button' 
+          onClick={() => onAddMeal(day.id)}>
+            + Add meal
+          </button>
       </div>
 
       {day.meals.length > 0 ? (

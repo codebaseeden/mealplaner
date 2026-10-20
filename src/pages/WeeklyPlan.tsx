@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useState } from 'react'
 import styles from './WeeklyPlan.module.css'
-import type { Day } from '../types/meal'
+import type { Day, MealType } from '../types/meal'
 import DayPlan from '../components/DayPlan'
 
 const initialWeekPlan: Day[] = [
@@ -42,7 +42,7 @@ const initialWeekPlan: Day[] = [
 function WeeklyPlan() {
   const [weekPlan, setWeekPlan] = useState<Day[]>(initialWeekPlan)
 
-  function addMeal(dayId: number, recipeId: number) {
+  function addMeal(dayId: number, recipeId: number, mealType: MealType) {
     setWeekPlan((currentPlan) =>
       currentPlan.map((day) => {
         if (day.id === dayId) {
@@ -52,7 +52,7 @@ function WeeklyPlan() {
               ...day.meals,
               {
                 id: Date.now(),
-                mealType: 'dinner',
+                mealType: mealType,
                 recipeId: recipeId,
               },
             ],
@@ -97,13 +97,12 @@ function WeeklyPlan() {
       </div>
 
       {weekPlan.map((day) => (
-        <DayPlan key={day.id} day={day} />
+        <DayPlan
+          key={day.id}
+          day={day}
+          onAddMeal={(dayId) => addMeal(dayId, 2, 'breakfast')}
+        />
       ))}
-
-      <button type="button" onClick={() => addMeal(3, 2)}>
-        Add test meal
-      </button>
-
     </section>
   )
 }
