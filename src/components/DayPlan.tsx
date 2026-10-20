@@ -2,6 +2,7 @@ import type { Day } from '../types/meal'
 import MealCard from './MealCard'
 import styles from './DayPlan.module.css'
 import { getRecipeById } from '../data/recipes'
+import { Plus } from 'lucide-react'
 
 type DayPlanProps = {
   day: Day
@@ -22,9 +23,12 @@ function DayPlan({ day, onAddMeal }: DayPlanProps) {
           {day.day}
         </h2>
         <button
-          type='button' 
-          onClick={() => onAddMeal(day.id)}>
-            + Add meal
+          type='button'
+          className = {styles.addButton} 
+          onClick={() => onAddMeal(day.id)}
+          aria-label={`Add meal for ${day.day}`}
+        >
+            <Plus size={18} strokeWidth={2} />
           </button>
       </div>
 
