@@ -19,10 +19,19 @@ function RecipePicker({
     const [isClosing, setIsClosing] = useState(false)
     const [pendingRecipeId, setPendingRecipeId] = useState<number | null>(null)
     const [searchQuery, setSearchQuery] = useState('')
-    const filteredRecipes = recipes.filter((recipe) =>
-        recipe.title.toLowerCase().includes(searchQuery.toLowerCase())
-    )
     const [selectedMealType, setSelectedMealType] = useState<MealType>('dinner')
+    const filteredRecipes = recipes.filter((recipe) => {
+        const matchesSearch = recipe.title
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase())
+
+        const matchesMealType =
+            !recipe.mealTypes ||
+            recipe.mealTypes.length === 0 ||
+            recipe.mealTypes.includes(selectedMealType)
+
+        return matchesSearch && matchesMealType
+    })
 
     function handleClose() {
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -109,8 +118,10 @@ function RecipePicker({
                 <div className={styles.recipeList}>
                     {filteredRecipes.length === 0 ? (
                         <div className={styles.emptyState}>
-                            <p>No recipes found</p>
-                            <span>Try searching for something else.</span>
+                            <p>No matching recipes</p>
+                            <span>
+                                Try a different search or meal type.
+                            </span>
                         </div>
                     ) : (
                         filteredRecipes.map((recipe) => (

@@ -2,6 +2,7 @@ export type Recipe = {
   id: number
   title: string
   duration: number
+  mealTypes?: MealType[]
 }
 
 export type MealType = 'breakfast' | 'lunch' | 'dinner'

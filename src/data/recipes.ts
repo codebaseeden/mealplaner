@@ -5,11 +5,13 @@ export const recipes: Recipe[] = [
     id: 1,
     title: 'Creamy Tomato Orzo',
     duration: 25,
+    mealTypes: ['lunch', 'dinner']
   },
   {
     id: 2,
     title: 'Overnight Oats',
     duration: 10,
+    mealTypes: ['breakfast']
   },
   {
     id: 3,
