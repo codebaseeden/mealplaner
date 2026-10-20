@@ -42,10 +42,10 @@ const initialWeekPlan: Day[] = [
 function WeeklyPlan() {
   const [weekPlan, setWeekPlan] = useState<Day[]>(initialWeekPlan)
 
-  function addTestMeal() {
+  function addMeal(dayId: number, recipeId: number) {
     setWeekPlan((currentPlan) =>
       currentPlan.map((day) => {
-        if (day.id === 3) {
+        if (day.id === dayId) {
           return {
             ...day,
             meals: [
@@ -53,7 +53,7 @@ function WeeklyPlan() {
               {
                 id: Date.now(),
                 mealType: 'dinner',
-                recipeId: 1,
+                recipeId: recipeId,
               },
             ],
           }
@@ -100,8 +100,8 @@ function WeeklyPlan() {
         <DayPlan key={day.id} day={day} />
       ))}
 
-      <button type="button" onClick={addTestMeal}>
-        Add test meal to Wednesday
+      <button type="button" onClick={() => addMeal(3, 2)}>
+        Add test meal
       </button>
 
     </section>
