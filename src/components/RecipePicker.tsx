@@ -2,10 +2,11 @@ import { recipes } from '../data/recipes'
 import { X, Plus, Clock3, Search } from 'lucide-react'
 import styles from './RecipePicker.module.css'
 import { useState } from 'react'
+import type { MealType } from '../types/meal'
 
 type RecipePickerProps = {
     dayId: number
-    onSelectRecipe: (dayId: number, recipeId: number) => void
+    onSelectRecipe: (dayId: number, recipeId: number, mealType: MealType) => void
     onClose: () => void
 }
 
@@ -21,6 +22,7 @@ function RecipePicker({
     const filteredRecipes = recipes.filter((recipe) =>
         recipe.title.toLowerCase().includes(searchQuery.toLowerCase())
     )
+    const [selectedMealType, setSelectedMealType] = useState<MealType>('dinner')
 
     function handleClose() {
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -51,7 +53,7 @@ function RecipePicker({
                     }
 
                     if (pendingRecipeId !== null) {
-                        onSelectRecipe(dayId, pendingRecipeId)
+                        onSelectRecipe(dayId, pendingRecipeId, selectedMealType)
                     } else {
                         onClose()
                     }
@@ -72,17 +74,37 @@ function RecipePicker({
                         <X size={20} />
                     </button>
                 </div>
-                    <div className={styles.searchField}>
-                        <Search size={20} aria-hidden="true" />
 
-                        <input
-                            type="search"
-                            placeholder="Search recipes..."
-                            aria-label="Search recipes"
-                            value={searchQuery}
-                            onChange={(event) => setSearchQuery(event.target.value)}
-                        />
-                    </div>
+                <div
+                    className={styles.mealTypeSelector}
+                    role="group"
+                    aria-label="Meal type"
+                >
+                    {(['breakfast', 'lunch', 'dinner'] as MealType[]).map((mealType) => (
+                        <button
+                            key={mealType}
+                            type="button"
+                            className={`${styles.mealTypeButton} ${selectedMealType === mealType ? styles.mealTypeButtonActive : ''
+                                }`}
+                            onClick={() => setSelectedMealType(mealType)}
+                            aria-pressed={selectedMealType === mealType}
+                        >
+                            {mealType}
+                        </button>
+                    ))}
+                </div>
+
+                <div className={styles.searchField}>
+                    <Search size={20} aria-hidden="true" />
+
+                    <input
+                        type="search"
+                        placeholder="Search recipes..."
+                        aria-label="Search recipes"
+                        value={searchQuery}
+                        onChange={(event) => setSearchQuery(event.target.value)}
+                    />
+                </div>
 
                 <div className={styles.recipeList}>
                     {filteredRecipes.length === 0 ? (
@@ -98,7 +120,7 @@ function RecipePicker({
                                 className={styles.recipeButton}
                                 onClick={() => {
                                     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                                        onSelectRecipe(dayId, recipe.id)
+                                        onSelectRecipe(dayId, recipe.id, selectedMealType)
                                         return
                                     }
 

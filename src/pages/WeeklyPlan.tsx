@@ -241,8 +241,8 @@ function WeeklyPlan() {
       {selectedDayId !== null && (
         <RecipePicker
           dayId={selectedDayId}
-          onSelectRecipe={(dayId, recipeId) => {
-            addMeal(dayId, recipeId, 'dinner')
+          onSelectRecipe={(dayId, recipeId, mealType) => {
+            addMeal(dayId, recipeId, mealType)
             setSelectedDayId(null)
           }}
           onClose={() => setSelectedDayId(null)}

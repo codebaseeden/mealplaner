@@ -187,6 +187,40 @@
   outline-offset: 2px;
 }
 
+.mealTypeSelector {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 12px;
+    background-color: #f1f3ef;
+}
+
+.mealTypeButton {
+    flex: 1;
+    padding: 10px 12px;
+    border: none;
+    border-radius: 8px;
+    background-color: transparent;
+    color: #59665c;
+    font: inherit;
+    font-size: 14px;
+    text-transform: capitalize;
+    cursor: pointer;
+    transition: background-color 150ms ease, box-shadow 150ms ease;
+}
+
+.mealTypeButtonActive {
+    background-color: white;
+    color: #29392f;
+    font-weight: 600;
+    box-shadow: 0 1px 4px rgb(0 0 0 / 8%);
+}
+
+.mealTypeButton:focus-visible {
+    outline: 2px solid #426b48;
+    outline-offset: 2px;
+}
+
 @keyframes slideUp {
     from {
         transform: translateY(100%);
