@@ -1,0 +1,64 @@
+.sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  background-color: white;
+  padding: 24px;
+
+  border-radius: 24px 24px 0 0;
+  z-index: 100;
+
+  animation: slideUp 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+
+  width: 100%;
+  border: none;
+  padding: 0;
+
+  background-color: rgb(0 0 0 / 45%);
+  z-index: 99;
+  cursor: default;
+}
+
+.closing {
+  animation: slideDown 250ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet {
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet,
+  .closing {
+    animation: none;
+  }
+}
