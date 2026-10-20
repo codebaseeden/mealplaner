@@ -1,75 +1,82 @@
-# React + TypeScript + Vite
+# 🌿 Meal Planner
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple, cozy meal planning app that makes deciding what to cook a little easier.
 
-Currently, two official plugins are available:
+Meal Planner is a personal project built to explore modern web development with React and TypeScript. The goal is to create an intuitive, low-effort way to plan meals, discover recipes, and organize grocery shopping.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## ✨ Features
 
-## React Compiler
+### Currently implemented
+- **Weekly meal planning** — Navigate between weeks and plan meals for each day.
+- **Recipe picker** — Browse and search available recipes.
+- **Add and remove meals** — Manage your weekly plan with ease.
+- **Undo removal** — Restore accidentally removed meals using an animated snackbar.
+- **Local storage** — Meal plans persist between browser sessions.
+- **Responsive interface** — A mobile-first UI with accessible interactions.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Planned
+- Breakfast, lunch, and dinner selection
+- Recipe details and ingredient management
+- Automatically generated shopping lists
+- Recipe importing
+- User accounts and database persistence
+- Customizable meal planning preferences
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **React** — Component-based UI
+- **TypeScript** — Type-safe development
+- **Vite** — Development and build tooling
+- **CSS Modules** — Component-scoped styling
+- **Lucide React** — Icons
+- **Local Storage** — Temporary data persistence
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🚀 Getting Started
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Prerequisites
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Node.js
+- npm
 
+### Installation
+
+Clone the repository and install dependencies:
+
+```bash
+git clone <repository-url>
+cd <repository-name>
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+Start the development server:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm run dev
 ```
+
+Open the local URL displayed in your terminal.
+
+### Production Build
+
+```bash
+npm run build
+```
+
+## 📁 Project Structure
+
+```text
+src/
+├── components/    # Reusable UI components
+├── data/          # Recipe data and helpers
+├── pages/         # Main application views
+├── types/         # TypeScript type definitions
+└── ...
+```
+
+## 🌱 Project Status
+
+**Work in progress**
+
+Meal Planner is currently in its early development stage. The focus is on building a clean, accessible interface and learning React, TypeScript, and application architecture along the way.
+
+The long-term goal is a full-stack application with persistent user data, recipe management, and a seamless shopping workflow.
