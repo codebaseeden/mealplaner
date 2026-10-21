@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import styles from './WeeklyPlan.module.css'
 import DayPlan from '../components/DayPlan'
 import RecipePicker from '../components/RecipePicker'
@@ -59,6 +59,64 @@ function WeeklyPlan() {
   const [removedMeal, setRemovedMeal] = useState<RemovedMeal | null>(null)
   const [isSnackbarClosing, setIsSnackbarClosing] = useState(false)
   const [mealPlanError, setMealPlanError] = useState<string | null>(null)
+  const [showModeSwitchDialog, setShowModeSwitchDialog] = useState(false)
+
+  const dialogRef = useRef<HTMLDivElement>(null)
+  const simpleButtonRef = useRef<HTMLButtonElement>(null)
+
+
+
+  useEffect(() => {
+    if (!showModeSwitchDialog) {
+      return
+    }
+
+    dialogRef.current?.focus()
+
+    return () => {
+      simpleButtonRef.current?.focus()
+    }
+  }, [showModeSwitchDialog])
+
+  useEffect(() => {
+    if (!showModeSwitchDialog) {
+      return
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setShowModeSwitchDialog(false)
+        return
+      }
+
+      if (event.key !== 'Tab') {
+        return
+      }
+
+      const buttons = dialogRef.current?.querySelectorAll('button')
+
+      if (!buttons || buttons.length === 0) {
+        return
+      }
+
+      const firstButton = buttons[0]
+      const lastButton = buttons[buttons.length - 1]
+
+      if (event.shiftKey && document.activeElement === firstButton) {
+        event.preventDefault()
+        lastButton.focus()
+      } else if (!event.shiftKey && document.activeElement === lastButton) {
+        event.preventDefault()
+        firstButton.focus()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [showModeSwitchDialog])
 
   useEffect(() => {
     if (removedMeal === null) {
@@ -216,6 +274,21 @@ function WeeklyPlan() {
     year: 'numeric',
   })}`
 
+  function handleSwitchToSimple() {
+    const hasMultipleMeals = Object.values(weekPlans).some(
+      week => week.some(
+        day => day.meals.length > 1
+      )
+    )
+
+    if (hasMultipleMeals) {
+      setShowModeSwitchDialog(true)
+      return
+    }
+
+    setPlanningMode('simple')
+  }
+
   return (
     <section className={styles.page} aria-labelledby="weekly-plan-title">
 
@@ -232,10 +305,11 @@ function WeeklyPlan() {
         aria-label="Planning mode"
       >
         <button
+          ref={simpleButtonRef}
           type="button"
           className={`${styles.planningModeButton} ${planningMode === 'simple' ? styles.planningModeButtonActive : ''
             }`}
-          onClick={() => setPlanningMode('simple')}
+          onClick={handleSwitchToSimple}
           aria-pressed={planningMode === 'simple'}
         >
           Simple
@@ -319,6 +393,49 @@ function WeeklyPlan() {
           <button type="button" onClick={undoRemoveMeal}>
             Undo
           </button>
+        </div>
+      )}
+
+      {showModeSwitchDialog && (
+        <div className={styles.dialogBackdrop}>
+          <div
+            ref={dialogRef}
+            tabIndex={-1}
+            className={styles.dialog}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="mode-dialog-title"
+            aria-describedby="mode-dialog-description"
+          >
+            <h2 id="mode-dialog-title">
+              Switch to Simple Mode?
+            </h2>
+
+            <p id="mode-dialog-description">
+              Some days have multiple meals planned.
+              Your existing meals will be kept.
+              You can manage them in Detailed Mode at any time.
+            </p>
+
+            <div className={styles.dialogActions}>
+              <button
+                type="button"
+                onClick={() => setShowModeSwitchDialog(false)}
+              >
+                Stay in Detailed Mode
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setPlanningMode('simple')
+                  setShowModeSwitchDialog(false)
+                }}
+              >
+                Switch to Simple Mode
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </section>
