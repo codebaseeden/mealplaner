@@ -1,4 +1,4 @@
-import type { Day } from '../types/meal'
+import type { Day, PlanningMode } from '../types/meal'
 import MealCard from './MealCard'
 import styles from './DayPlan.module.css'
 import { getRecipeById } from '../data/recipes'
@@ -6,11 +6,12 @@ import { Plus } from 'lucide-react'
 
 type DayPlanProps = {
   day: Day
+  planningMode: PlanningMode
   onAddMeal: (dayId: number) => void
   onRemoveMeal: (dayId: number, mealId: number) => void
 }
 
-function DayPlan({ day, onAddMeal, onRemoveMeal }: DayPlanProps) {
+function DayPlan({ day, onAddMeal, onRemoveMeal, planningMode }: DayPlanProps) {
   const mealTypeOrder = {
     breakfast: 0,
     lunch: 1,
@@ -51,7 +52,7 @@ function DayPlan({ day, onAddMeal, onRemoveMeal }: DayPlanProps) {
             <MealCard
               key={meal.id}
               title={recipe.title}
-              mealType={meal.mealType}
+              mealType={planningMode === 'detailed' ? meal.mealType : undefined}
               duration={recipe.duration}
               onRemove={() => onRemoveMeal(day.id, meal.id)}
             />

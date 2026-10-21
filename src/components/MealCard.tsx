@@ -1,9 +1,10 @@
+import type { MealType } from '../types/meal'
 import styles from './MealCard.module.css'
 import { X } from 'lucide-react'
 
 type MealCardProps = {
   title: string
-  mealType: 'breakfast' | 'lunch' | 'dinner'
+  mealType?: MealType
   duration: number
   onRemove: () => void
 }
@@ -16,7 +17,9 @@ function MealCard({
 }: MealCardProps) {
   return (
     <article className={styles.card}>
-      <span className={styles.mealType}>{mealType}</span>
+      {mealType && (
+        <span className={styles.mealType}>{mealType}</span>
+      )}
 
       <h3 className={styles.title}>{title}</h3>
 

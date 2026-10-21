@@ -278,6 +278,7 @@ function WeeklyPlan() {
         <DayPlan
           key={day.id}
           day={day}
+          planningMode={planningMode}
           onAddMeal={(dayId) => setSelectedDayId(dayId)}
           onRemoveMeal={removeMeal}
         />
