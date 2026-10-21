@@ -1,3 +1,4 @@
+
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import styles from './WeeklyPlan.module.css'
@@ -25,15 +26,16 @@ type RemovedMeal = {
 }
 
 function WeeklyPlan() {
+  // Planning mode
   const [planningMode, setPlanningMode] = useState<PlanningMode>(() => {
     const savedMode = localStorage.getItem('meal-planner-mode')
-
     return savedMode === 'detailed' ? 'detailed' : 'simple'
   })
+
+  // Saved weekly plans
   const [weekPlans, setWeekPlans] = useState<Record<string, Day[]>>(() => {
     try {
       const savedPlans = localStorage.getItem('meal-planner-week-plans')
-
       return savedPlans ? JSON.parse(savedPlans) : {}
     } catch (error) {
       console.error('Failed to load saved meal plans:', error)
@@ -41,19 +43,7 @@ function WeeklyPlan() {
     }
   })
 
-  useEffect(() => {
-    localStorage.setItem(
-      'meal-planner-week-plans',
-      JSON.stringify(weekPlans)
-    )
-  }, [weekPlans])
-
-  useEffect(() => {
-    localStorage.setItem('meal-planner-mode', planningMode)
-  }, [planningMode])
-
-  // States
-
+  // UI states
   const [selectedDayId, setSelectedDayId] = useState<number | null>(null)
   const [weekOffset, setWeekOffset] = useState(0)
   const [removedMeal, setRemovedMeal] = useState<RemovedMeal | null>(null)
@@ -61,63 +51,68 @@ function WeeklyPlan() {
   const [mealPlanError, setMealPlanError] = useState<string | null>(null)
   const [showModeSwitchDialog, setShowModeSwitchDialog] = useState(false)
 
-  const dialogRef = useRef<HTMLDivElement>(null)
-  const simpleButtonRef = useRef<HTMLButtonElement>(null)
+  // Dialog reference
+  const dialogRef = useRef<HTMLDialogElement>(null)
 
-
-
+  // Persist weekly plans
   useEffect(() => {
-    if (!showModeSwitchDialog) {
+    localStorage.setItem(
+      'meal-planner-week-plans',
+      JSON.stringify(weekPlans)
+    )
+  }, [weekPlans])
+
+  // Persist planning mode
+  useEffect(() => {
+    localStorage.setItem('meal-planner-mode', planningMode)
+  }, [planningMode])
+
+  // Open and close the native dialog
+  useEffect(() => {
+    const dialog = dialogRef.current
+
+    if (!dialog) {
       return
     }
 
-    dialogRef.current?.focus()
-
-    return () => {
-      simpleButtonRef.current?.focus()
+    if (showModeSwitchDialog) {
+      if (!dialog.open) {
+        dialog.showModal()
+      }
+    } else {
+      if (dialog.open) {
+        dialog.close()
+      }
     }
   }, [showModeSwitchDialog])
 
-  useEffect(() => {
-    if (!showModeSwitchDialog) {
-      return
+  // Keep React state in sync when Escape is pressed
+  function handleDialogCancel(event: React.SyntheticEvent<HTMLDialogElement>) {
+    event.preventDefault()
+    setShowModeSwitchDialog(false)
+  }
+
+  // Dialog Backdrop click exit
+
+  function handleDialogBackdropClick(
+    event: React.MouseEvent<HTMLDialogElement>
+  ) {
+    const dialog = event.currentTarget
+
+    const rect = dialog.getBoundingClientRect()
+
+    const clickedOutside =
+      event.clientX < rect.left ||
+      event.clientX > rect.right ||
+      event.clientY < rect.top ||
+      event.clientY > rect.bottom
+
+    if (clickedOutside) {
+      setShowModeSwitchDialog(false)
     }
+  }
 
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
-        setShowModeSwitchDialog(false)
-        return
-      }
-
-      if (event.key !== 'Tab') {
-        return
-      }
-
-      const buttons = dialogRef.current?.querySelectorAll('button')
-
-      if (!buttons || buttons.length === 0) {
-        return
-      }
-
-      const firstButton = buttons[0]
-      const lastButton = buttons[buttons.length - 1]
-
-      if (event.shiftKey && document.activeElement === firstButton) {
-        event.preventDefault()
-        lastButton.focus()
-      } else if (!event.shiftKey && document.activeElement === lastButton) {
-        event.preventDefault()
-        firstButton.focus()
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [showModeSwitchDialog])
-
+  // Handle snackbar timeout
   useEffect(() => {
     if (removedMeal === null) {
       return
@@ -139,6 +134,38 @@ function WeeklyPlan() {
     }
   }, [removedMeal])
 
+  // Week calculations
+  const today = new Date()
+  const monday = new Date(today)
+
+  const dayOfWeek = monday.getDay()
+  const daysSinceMonday = (dayOfWeek + 6) % 7
+
+  monday.setDate(monday.getDate() - daysSinceMonday + weekOffset * 7)
+
+  const weekKey = [
+    monday.getFullYear(),
+    String(monday.getMonth() + 1).padStart(2, '0'),
+    String(monday.getDate()).padStart(2, '0'),
+  ].join('-')
+
+  const weekPlan = weekPlans[weekKey] ?? createEmptyWeekPlan()
+
+  const sunday = new Date(monday)
+  sunday.setDate(monday.getDate() + 6)
+
+  const dateLocale = 'de-AT'
+
+  const weekLabel = `${monday.toLocaleDateString(dateLocale, {
+    month: '2-digit',
+    day: '2-digit',
+  })} - ${sunday.toLocaleDateString(dateLocale, {
+    month: '2-digit',
+    day: '2-digit',
+    year: 'numeric',
+  })}`
+
+  // Add or replace a meal
   function addMeal(dayId: number, recipeId: number, mealType: MealType) {
     const currentDay = weekPlan.find(day => day.id === dayId)
 
@@ -170,9 +197,11 @@ function WeeklyPlan() {
         [weekKey]: updatedWeek,
       }
     })
+
     return true
   }
 
+  // Remove a meal
   function removeMeal(dayId: number, mealId: number) {
     const currentDay = weekPlan.find((day) => day.id === dayId)
     const mealToRemove = currentDay?.meals.find((meal) => meal.id === mealId)
@@ -210,6 +239,7 @@ function WeeklyPlan() {
     })
   }
 
+  // Undo meal removal
   function undoRemoveMeal() {
     if (!removedMeal) {
       return
@@ -245,35 +275,7 @@ function WeeklyPlan() {
     }
   }
 
-  const today = new Date()
-  const monday = new Date(today)
-
-  const dayOfWeek = monday.getDay()
-  const daysSinceMonday = (dayOfWeek + 6) % 7
-
-  monday.setDate(monday.getDate() - daysSinceMonday + weekOffset * 7)
-
-  const weekKey = [
-    monday.getFullYear(),
-    String(monday.getMonth() + 1).padStart(2, '0'),
-    String(monday.getDate()).padStart(2, '0'),
-  ].join('-')
-
-  const weekPlan = weekPlans[weekKey] ?? createEmptyWeekPlan()
-
-  const sunday = new Date(monday)
-  sunday.setDate(monday.getDate() + 6)
-
-  const dateLocale = 'de-AT'
-  const weekLabel = `${monday.toLocaleDateString(dateLocale, {
-    month: '2-digit',
-    day: '2-digit',
-  })} - ${sunday.toLocaleDateString(dateLocale, {
-    month: '2-digit',
-    day: '2-digit',
-    year: 'numeric',
-  })}`
-
+  // Switch to Simple Mode
   function handleSwitchToSimple() {
     const hasMultipleMeals = Object.values(weekPlans).some(
       week => week.some(
@@ -291,7 +293,6 @@ function WeeklyPlan() {
 
   return (
     <section className={styles.page} aria-labelledby="weekly-plan-title">
-
       <header className={styles.header}>
         <h1 id="weekly-plan-title">Your weekly plan</h1>
         <p className={styles.description}>
@@ -299,13 +300,13 @@ function WeeklyPlan() {
         </p>
       </header>
 
+      {/* Planning mode selector */}
       <div
         className={styles.planningModeSelector}
         role="group"
         aria-label="Planning mode"
       >
         <button
-          ref={simpleButtonRef}
           type="button"
           className={`${styles.planningModeButton} ${planningMode === 'simple' ? styles.planningModeButtonActive : ''
             }`}
@@ -326,6 +327,7 @@ function WeeklyPlan() {
         </button>
       </div>
 
+      {/* Week navigation */}
       <div className={styles.weekNavigation} aria-label="Week navigation">
         <button
           type="button"
@@ -348,15 +350,21 @@ function WeeklyPlan() {
         </button>
       </div>
 
+      {/* Day plans */}
       {weekPlan.map((day) => (
         <DayPlan
           key={day.id}
           day={day}
           planningMode={planningMode}
-          onAddMeal={(dayId) => setSelectedDayId(dayId)}
+          onAddMeal={(dayId) => {
+            setMealPlanError(null)
+            setSelectedDayId(dayId)
+          }}
           onRemoveMeal={removeMeal}
         />
       ))}
+
+      {/* Recipe picker */}
       {selectedDayId !== null && (
         <RecipePicker
           dayId={selectedDayId}
@@ -375,9 +383,11 @@ function WeeklyPlan() {
         />
       )}
 
+      {/* Undo snackbar */}
       {removedMeal !== null && (
         <div
-          className={`${styles.snackbar} ${isSnackbarClosing ? styles.snackbarClosing : ''}`}
+          className={`${styles.snackbar} ${isSnackbarClosing ? styles.snackbarClosing : ''
+            }`}
           role="status"
           onAnimationEnd={(event) => {
             if (event.target !== event.currentTarget || !isSnackbarClosing) {
@@ -396,48 +406,44 @@ function WeeklyPlan() {
         </div>
       )}
 
-      {showModeSwitchDialog && (
-        <div className={styles.dialogBackdrop}>
-          <div
-            ref={dialogRef}
-            tabIndex={-1}
-            className={styles.dialog}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="mode-dialog-title"
-            aria-describedby="mode-dialog-description"
+      {/* Planning mode confirmation dialog */}
+      <dialog
+        ref={dialogRef}
+        className={styles.dialog}
+        aria-labelledby="mode-dialog-title"
+        aria-describedby="mode-dialog-description"
+        onCancel={handleDialogCancel}
+        onClick={handleDialogBackdropClick}
+      >
+        <h2 id="mode-dialog-title">
+          Switch to Simple Mode?
+        </h2>
+
+        <p id="mode-dialog-description">
+          Some days have multiple meals planned.
+          Your existing meals will be kept.
+          You can manage them in Detailed Mode at any time.
+        </p>
+
+        <div className={styles.dialogActions}>
+          <button
+            type="button"
+            onClick={() => setShowModeSwitchDialog(false)}
           >
-            <h2 id="mode-dialog-title">
-              Switch to Simple Mode?
-            </h2>
+            Stay in Detailed Mode
+          </button>
 
-            <p id="mode-dialog-description">
-              Some days have multiple meals planned.
-              Your existing meals will be kept.
-              You can manage them in Detailed Mode at any time.
-            </p>
-
-            <div className={styles.dialogActions}>
-              <button
-                type="button"
-                onClick={() => setShowModeSwitchDialog(false)}
-              >
-                Stay in Detailed Mode
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setPlanningMode('simple')
-                  setShowModeSwitchDialog(false)
-                }}
-              >
-                Switch to Simple Mode
-              </button>
-            </div>
-          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setPlanningMode('simple')
+              setShowModeSwitchDialog(false)
+            }}
+          >
+            Switch to Simple Mode
+          </button>
         </div>
-      )}
+      </dialog>
     </section>
   )
 }
