@@ -2,6 +2,8 @@ export type Recipe = {
   id: number
   title: string
   duration: number
+  servings: number
+  ingredients: Ingredient[]
   mealTypes?: MealType[]
 }
 
@@ -20,3 +22,22 @@ export type Day = {
 }
 
 export type PlanningMode = 'simple' | 'detailed'
+
+export type Unit =
+  | 'g'
+  | 'kg'
+  | 'ml'
+  | 'l'
+  | 'pcs'
+  | 'tsp'
+  | 'tbsp'
+  | 'cup'
+  | 'oz'
+  | 'lb'
+  | 'fl_oz'
+
+export type Ingredient = {
+  ingredientId: string
+  amount: number
+  unit: Unit
+}

@@ -4,6 +4,8 @@ import { useState, useEffect, useRef } from 'react'
 import styles from './WeeklyPlan.module.css'
 import DayPlan from '../components/DayPlan'
 import RecipePicker from '../components/RecipePicker'
+import { loadWeekPlans } from '../utils/weekStorage'
+import { getWeekMonday, getWeekKey } from '../utils/week'
 
 import type { Day, Meal, MealType, PlanningMode } from '../types/meal'
 
@@ -25,7 +27,12 @@ type RemovedMeal = {
   meal: Meal
 }
 
-function WeeklyPlan() {
+type WeeklyPlanProps = {
+  weekOffset: number
+  setWeekOffset: React.Dispatch<React.SetStateAction<number>>
+}
+
+function WeeklyPlan({ weekOffset, setWeekOffset }: WeeklyPlanProps) {
   // Planning mode
   const [planningMode, setPlanningMode] = useState<PlanningMode>(() => {
     const savedMode = localStorage.getItem('meal-planner-mode')
@@ -33,19 +40,12 @@ function WeeklyPlan() {
   })
 
   // Saved weekly plans
-  const [weekPlans, setWeekPlans] = useState<Record<string, Day[]>>(() => {
-    try {
-      const savedPlans = localStorage.getItem('meal-planner-week-plans')
-      return savedPlans ? JSON.parse(savedPlans) : {}
-    } catch (error) {
-      console.error('Failed to load saved meal plans:', error)
-      return {}
-    }
-  })
+  const [weekPlans, setWeekPlans] = useState<Record<string, Day[]>>(
+    loadWeekPlans
+  )
 
   // UI states
   const [selectedDayId, setSelectedDayId] = useState<number | null>(null)
-  const [weekOffset, setWeekOffset] = useState(0)
   const [removedMeal, setRemovedMeal] = useState<RemovedMeal | null>(null)
   const [isSnackbarClosing, setIsSnackbarClosing] = useState(false)
   const [mealPlanError, setMealPlanError] = useState<string | null>(null)
@@ -135,19 +135,10 @@ function WeeklyPlan() {
   }, [removedMeal])
 
   // Week calculations
-  const today = new Date()
-  const monday = new Date(today)
-
-  const dayOfWeek = monday.getDay()
-  const daysSinceMonday = (dayOfWeek + 6) % 7
-
-  monday.setDate(monday.getDate() - daysSinceMonday + weekOffset * 7)
-
-  const weekKey = [
-    monday.getFullYear(),
-    String(monday.getMonth() + 1).padStart(2, '0'),
-    String(monday.getDate()).padStart(2, '0'),
-  ].join('-')
+  // Calculate the selected week's Monday and its storage key.
+  // Shared utilities ensure all pages identify weeks consistently.
+  const monday = getWeekMonday(weekOffset)
+  const weekKey = getWeekKey(monday)
 
   const weekPlan = weekPlans[weekKey] ?? createEmptyWeekPlan()
 
