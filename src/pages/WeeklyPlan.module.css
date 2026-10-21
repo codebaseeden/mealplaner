@@ -28,6 +28,7 @@
   line-height: 1.5;
 }
 
+/* Equal-width arrow columns keep the date label centered as its length changes. */
 .weekNavigation {
   display: grid;
   grid-template-columns: 40px minmax(0, 1fr) 40px;
@@ -75,6 +76,7 @@
   outline-offset: 2px;
 }
 
+/* Position the undo message above the bottom navigation without taking up layout space. */
 .snackbar {
   position: fixed;
   bottom: 88px;
@@ -146,6 +148,7 @@
   outline-offset: 2px;
 }
 
+/* Bound the native modal to the viewport, including mobile browser height changes. */
 .dialog {
   position: fixed;
   inset: 0;
@@ -250,6 +253,7 @@
   margin-top: 24px;
 }
 
+/* React waits for this exit animation to finish before removing the undo message. */
 .snackbarClosing {
   animation: snackbarSlideOut 250ms cubic-bezier(0.4, 0, 1, 1) both;
 }

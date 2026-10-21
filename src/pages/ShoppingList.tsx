@@ -39,6 +39,7 @@ function ShoppingList({ weekOffset, onPlanMeals }: ShoppingListProps) {
     )
 
     // Get the checked ingredients for the currently selected week.
+    // Include the unit in each key so quantities in different units stay independent.
     const checkedIngredients = new Set(checkedByWeek[weekKey] ?? [])
     // Keep unchecked ingredients first while preserving their original order.
     const sortedIngredients = [...ingredients].sort((a, b) => {
@@ -127,6 +128,7 @@ function ShoppingList({ weekOffset, onPlanMeals }: ShoppingListProps) {
 
                         return (
                             <Fragment key={key}>
+                                {/* Insert the completed heading only before the first checked item. */}
                                 {isChecked &&
                                     completedCount > 0 &&
                                     sortedIngredients.findIndex((item) =>

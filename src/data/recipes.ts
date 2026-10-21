@@ -1,5 +1,6 @@
 import type { Recipe } from '../types/meal'
 
+// Ingredient amounts describe the full recipe at its declared serving count.
 export const recipes: Recipe[] = [
   {
     id: 1,
@@ -89,6 +90,7 @@ export const recipes: Recipe[] = [
   }
 ]
 
+// A missing recipe is treated as a broken reference rather than silently omitted.
 export function getRecipeById(id: number): Recipe {
   const recipe = recipes.find((recipe) => recipe.id === id)
 

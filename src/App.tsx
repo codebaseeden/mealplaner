@@ -9,6 +9,7 @@ import ShoppingList from './pages/ShoppingList'
 
 function App() {
   const [activeTab, setActiveTab] = useState<Tab>('shop')
+  // Keep the selected week above both pages so tab changes preserve their shared context.
   const [weekOffset, setWeekOffset] = useState(0)
 
   return (
@@ -16,6 +17,7 @@ function App() {
       activeTab={activeTab}
       onTabChange={setActiveTab}
     >
+      {/* Only the active page is mounted; persistent data survives through browser storage. */}
       {activeTab === 'plan' && (
         <WeeklyPlan
           weekOffset={weekOffset}

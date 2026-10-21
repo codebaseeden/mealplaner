@@ -1,3 +1,4 @@
+// Stable ingredient IDs link recipe quantities to their display names.
 export const ingredients: Record<string, string> = {
   'orzo': 'Orzo',
   'cherry-tomatoes': 'Cherry Tomatoes',
@@ -14,5 +15,6 @@ export const ingredients: Record<string, string> = {
 }
 
 export function getIngredientName(id: string): string {
+  // Keep unknown ingredients readable even when the catalog has no matching name.
   return ingredients[id] ?? id
 }

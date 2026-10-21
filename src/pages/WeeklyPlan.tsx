@@ -9,6 +9,7 @@ import { getWeekMonday, getWeekKey } from '../utils/week'
 
 import type { Day, Meal, MealType, PlanningMode } from '../types/meal'
 
+// Create fresh arrays for unsaved weeks so their meals are never shared.
 function createEmptyWeekPlan(): Day[] {
   return [
     { id: 1, day: 'Monday', meals: [] },
@@ -21,6 +22,7 @@ function createEmptyWeekPlan(): Day[] {
   ]
 }
 
+// Retain the original week so Undo still restores the meal after week navigation.
 type RemovedMeal = {
   weekKey: string
   dayId: number
@@ -101,6 +103,7 @@ function WeeklyPlan({ weekOffset, setWeekOffset }: WeeklyPlanProps) {
 
     const rect = dialog.getBoundingClientRect()
 
+    // Backdrop clicks target the dialog too; coordinates distinguish them from content clicks.
     const clickedOutside =
       event.clientX < rect.left ||
       event.clientX > rect.right ||
@@ -121,6 +124,7 @@ function WeeklyPlan({ weekOffset, setWeekOffset }: WeeklyPlanProps) {
     setIsSnackbarClosing(false)
 
     const timer = window.setTimeout(() => {
+      // Reduced-motion styles disable animations, so no animation-end event will clear the message.
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         setRemovedMeal(null)
         return
@@ -160,6 +164,7 @@ function WeeklyPlan({ weekOffset, setWeekOffset }: WeeklyPlanProps) {
   function addMeal(dayId: number, recipeId: number, mealType: MealType) {
     const currentDay = weekPlan.find(day => day.id === dayId)
 
+    // Preserve multi-meal days from Detailed Mode instead of replacing them in Simple Mode.
     if (planningMode === 'simple' && (currentDay?.meals.length ?? 0) > 1) {
       setMealPlanError(
         'This day already has multiple meals. Switch to Detailed Mode to manage them.'
@@ -174,6 +179,7 @@ function WeeklyPlan({ weekOffset, setWeekOffset }: WeeklyPlanProps) {
         if (day.id === dayId) {
           return {
             ...day,
+            // Simple Mode replaces the single meal; Detailed Mode appends another entry.
             meals: planningMode === 'simple' && day.meals.length <= 1
               ? [{ id: Date.now(), mealType, recipeId }]
               : [...day.meals, { id: Date.now(), mealType, recipeId }],
@@ -236,6 +242,7 @@ function WeeklyPlan({ weekOffset, setWeekOffset }: WeeklyPlanProps) {
       return
     }
 
+    // Restore to the recorded week, which may differ from the week currently displayed.
     const { weekKey: originalWeekKey, dayId, meal } = removedMeal
 
     setWeekPlans((currentPlans) => {
@@ -268,6 +275,7 @@ function WeeklyPlan({ weekOffset, setWeekOffset }: WeeklyPlanProps) {
 
   // Switch to Simple Mode
   function handleSwitchToSimple() {
+    // Check every saved week because the planning mode applies across the whole planner.
     const hasMultipleMeals = Object.values(weekPlans).some(
       week => week.some(
         day => day.meals.length > 1
@@ -367,6 +375,7 @@ function WeeklyPlan({ weekOffset, setWeekOffset }: WeeklyPlanProps) {
               setMealPlanError(null)
             }
 
+            // Let the picker respond to a rejected selection without hiding the error.
             return success
           }}
           onClose={() => setSelectedDayId(null)}
